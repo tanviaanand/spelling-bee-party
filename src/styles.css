@@ -38,6 +38,40 @@ input, select { font: inherit; border-radius: 8px; border: 1px solid #999; paddi
   padding: 3px 10px; border-radius: 999px; opacity: 0.85; pointer-events: none;
 }
 
+/* ================= LANDING (create / join) ================= */
+.landing {
+  min-height: 100vh; display: flex; align-items: center; justify-content: center;
+  padding: 24px; background: radial-gradient(circle at 50% 0%, #241f10, var(--bg));
+}
+.landing-card {
+  width: 100%; max-width: 620px; text-align: center;
+  background: var(--bg2); border: 2px solid var(--honey-dim);
+  border-radius: 24px; padding: 40px 28px;
+}
+.landing-title { font-size: 40px; margin: 0 0 8px; color: var(--honey); }
+.landing-sub { color: var(--ink-dim); font-size: 17px; margin: 0 0 28px; }
+.landing-actions { display: flex; flex-direction: column; gap: 8px; }
+.landing-block h2 { font-size: 18px; margin: 0 0 12px; }
+.landing-btn {
+  font-size: 18px; font-weight: 800; padding: 14px 24px; border: none;
+  border-radius: 14px; background: #3a3323; color: var(--ink); cursor: pointer;
+}
+.landing-btn.primary { background: var(--honey); color: #241a02; width: 100%; }
+.landing-btn:disabled { opacity: 0.5; }
+.landing-hint { color: var(--ink-dim); font-size: 13px; margin: 10px 0 0; }
+.landing-divider { position: relative; margin: 22px 0; color: var(--ink-dim); }
+.landing-divider::before {
+  content: ""; position: absolute; top: 50%; left: 0; right: 0; height: 1px; background: #443b26;
+}
+.landing-divider span { position: relative; background: var(--bg2); padding: 0 14px; font-size: 13px; }
+.landing-join { display: flex; gap: 8px; justify-content: center; }
+.landing-join input {
+  font-size: 22px; font-weight: 800; letter-spacing: 0.2em; text-align: center;
+  text-transform: uppercase; width: 180px; padding: 12px; border-radius: 12px;
+  border: 2px solid var(--honey-dim); background: var(--bg); color: var(--honey);
+}
+.landing-error { color: var(--bad); font-size: 14px; margin: 10px 0 0; }
+
 /* ================= PRESENTER (TV) ================= */
 .presenter {
   height: 100vh;
@@ -201,6 +235,13 @@ input, select { font: inherit; border-radius: 8px; border: 1px solid #999; paddi
 .qr-join { display: flex; flex-direction: column; align-items: center; gap: 1.2vh; flex: 0 1 auto; max-width: 20vw; min-width: 210px; }
 .qr-img { width: min(20vh, 13vw); height: auto; border-radius: 14px; }
 .qr-title { font-size: 2.8vh; font-weight: 800; color: var(--honey); text-align: center; }
+.qr-code-big { font-size: 3.2vh; color: var(--ink); }
+.qr-code-big b { color: var(--honey); letter-spacing: 0.15em; font-size: 3.8vh; }
+.welcome-code {
+  display: inline-block; margin: 0 0 2vh; font-size: 3vh; color: var(--ink-dim);
+  background: var(--bg2); border-radius: 999px; padding: 1vh 3vh;
+}
+.welcome-code b { color: var(--honey); letter-spacing: 0.2em; font-size: 3.6vh; }
 .qr-url { font-size: 2.4vh; color: var(--ink); background: var(--bg2); padding: 0.5vh 1.5vh; border-radius: 8px; }
 .qr-claims { text-align: center; max-height: 20vh; overflow: hidden; }
 .qr-count { color: var(--ink-dim); font-size: 2.2vh; }
@@ -391,6 +432,16 @@ input, select { font: inherit; border-radius: 8px; border: 1px solid #999; paddi
 }
 .score-chip b { color: var(--honey); }
 .score-chip.leader { box-shadow: 0 0 0 2px var(--honey) inset; }
+
+.admin-gamebar {
+  display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
+  background: #221d10; color: var(--ink); border-radius: 10px;
+  padding: 8px 14px; margin-bottom: 10px;
+}
+.admin-gamecode { font-size: 16px; }
+.admin-gamecode b { color: var(--honey); letter-spacing: 0.15em; font-size: 20px; }
+.admin-tvlink { color: var(--honey); font-weight: 700; text-decoration: none; }
+.admin-tvlink:hover { text-decoration: underline; }
 
 .admin-header {
   display: flex; justify-content: space-between; align-items: center;

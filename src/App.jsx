@@ -5,9 +5,10 @@ import { useHashRoute, useDbValue } from "./hooks";
 import Presenter from "./views/Presenter";
 import Admin from "./views/Admin";
 import Play from "./views/Play";
+import Landing from "./views/Landing";
 
 export default function App() {
-  const { view, param } = useHashRoute();
+  const { code, view, param } = useHashRoute();
 
   // Stale-tab detection: prod tabs raise the build high-water mark; any tab
   // older than the mark shows a refresh banner. Dev tabs only listen.
@@ -21,7 +22,8 @@ export default function App() {
   const stale = IS_PROD_BUILD && latestBuild != null && latestBuild > BUILD_ID;
 
   let page;
-  if (view === "admin") page = <Admin />;
+  if (!code) page = <Landing />; // no game code in the URL → create/join screen
+  else if (view === "admin") page = <Admin />;
   else if (view === "play") page = <Play playerId={param} />;
   else page = <Presenter />;
   return (

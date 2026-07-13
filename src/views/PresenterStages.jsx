@@ -3,17 +3,19 @@ import QRCode from "qrcode";
 import { getVoices, getSavedVoiceName, saveVoiceName, unlockAudio } from "../tts";
 import { RULES } from "../rules";
 import { buzzOrder, standings } from "../scoring";
+import { gameCode } from "../game";
 
-const PLAY_URL = `${window.location.origin}/#/play`;
+const playUrl = () => `${window.location.origin}/#/${gameCode()}/play`;
 
 // Big QR + live claim chips: shown on The Buzz intro — the phones-out moment.
 function QRJoin({ players }) {
   const [src, setSrc] = useState("");
+  const url = playUrl();
   useEffect(() => {
-    QRCode.toDataURL(PLAY_URL, { width: 512, margin: 1 })
+    QRCode.toDataURL(url, { width: 512, margin: 1 })
       .then(setSrc)
       .catch(() => {});
-  }, []);
+  }, [url]);
   const entries = Object.entries(players ?? {});
   const claimed = entries.filter(([, p]) => p.claimed).length;
   return (
@@ -21,7 +23,8 @@ function QRJoin({ players }) {
       {src && <img className="qr-img" src={src} alt="Scan to join" />}
       <div className="qr-side">
         <div className="qr-title">📱 Phones OUT — scan & tap your name!</div>
-        <div className="qr-url">{PLAY_URL.replace(/^https?:\/\//, "")}</div>
+        <div className="qr-code-big">code: <b>{gameCode()}</b></div>
+        <div className="qr-url">{url.replace(/^https?:\/\//, "")}</div>
         <div className="qr-claims">
           {entries.map(([pid, p]) => (
             <span key={pid} className={`claim-chip ${p.claimed ? "claimed" : ""}`}>
@@ -70,6 +73,9 @@ export function WelcomeStage({ phase, teams, players }) {
   return (
     <div className="stage welcome-stage">
       <h1 className="app-title">🐝 The Spelling Bee 🐝</h1>
+      <div className="welcome-code">
+        Game code <b>{gameCode()}</b> · join at {window.location.host}
+      </div>
       {!hasTeams && <p className="subtitle">Waiting for the host to set up the teams…</p>}
       {phase === "setup" && (
         <>

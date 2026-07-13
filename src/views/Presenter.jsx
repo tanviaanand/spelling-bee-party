@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
-import { useDbValue, useScores, useNow } from "../hooks";
+import { useGameValue, useScores, useNow } from "../hooks";
 import { speak, playCue } from "../tts";
 import { RULES } from "../rules";
 import Leaderboard from "./Leaderboard";
@@ -56,10 +56,10 @@ function Bees({ count = 7 }) {
 }
 
 export default function Presenter() {
-  const state = useDbValue("state");
-  const teams = useDbValue("teams");
-  const players = useDbValue("players");
-  const awards = useDbValue("awards");
+  const state = useGameValue("state");
+  const teams = useGameValue("teams");
+  const players = useGameValue("players");
+  const awards = useGameValue("awards");
   const { totals } = useScores();
 
   const phase = state?.phase ?? "welcome";

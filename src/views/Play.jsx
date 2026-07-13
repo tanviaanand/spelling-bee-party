@@ -1,10 +1,13 @@
 import React, { useEffect, useState } from "react";
-import { useDbValue, useScores, useConnected } from "../hooks";
+import { useGameValue, useScores, useConnected } from "../hooks";
 import { standings } from "../scoring";
 import { buzz, claimPlayer, unclaimPlayer } from "../db";
+import { gameCode } from "../game";
 import { bumpStat } from "../stats";
 
-const CLAIM_KEY = "bee.playerId";
+// Claim binding is per-game so a phone that played one game doesn't auto-bind in another.
+const claimKey = () => `bee.playerId.${gameCode()}`;
+const playHash = (pid) => `#/${gameCode()}/play${pid ? "/" + pid : ""}`;
 
 // ---- Claim screen: roster grouped by team; tap your name to bind this phone ----
 function ClaimScreen({ teams, players, onClaim }) {
@@ -47,9 +50,9 @@ function ClaimScreen({ teams, players, onClaim }) {
 }
 
 export default function Play({ playerId }) {
-  const state = useDbValue("state");
-  const teams = useDbValue("teams");
-  const players = useDbValue("players");
+  const state = useGameValue("state");
+  const teams = useGameValue("teams");
+  const players = useGameValue("players");
   const { totals } = useScores();
   const connected = useConnected();
   const [buzzed, setBuzzed] = useState(false);
@@ -57,8 +60,8 @@ export default function Play({ playerId }) {
   // Rebind from localStorage on load and whenever the phone wakes.
   useEffect(() => {
     const rebind = () => {
-      const saved = localStorage.getItem(CLAIM_KEY);
-      if (saved && saved !== playerId) window.location.hash = `#/play/${saved}`;
+      const saved = localStorage.getItem(claimKey());
+      if (saved && saved !== playerId) window.location.hash = playHash(saved);
     };
     rebind();
     document.addEventListener("visibilitychange", rebind);
@@ -70,8 +73,8 @@ export default function Play({ playerId }) {
   // Saved id points at a deleted player → clear and re-claim.
   useEffect(() => {
     if (playerId && players && !players[playerId]) {
-      localStorage.removeItem(CLAIM_KEY);
-      window.location.hash = "#/play";
+      localStorage.removeItem(claimKey());
+      window.location.hash = playHash();
     }
   }, [playerId, players]);
 
@@ -106,12 +109,12 @@ export default function Play({ playerId }) {
         teams={teams}
         players={players}
         onClaim={(pid) => {
-          const prev = localStorage.getItem(CLAIM_KEY);
+          const prev = localStorage.getItem(claimKey());
           if (prev && prev !== pid && players?.[prev]) unclaimPlayer(prev);
           if (!players?.[pid]?.claimed) bumpStat("playersJoined"); // first claim only
           claimPlayer(pid);
-          localStorage.setItem(CLAIM_KEY, pid);
-          window.location.hash = `#/play/${pid}`;
+          localStorage.setItem(claimKey(), pid);
+          window.location.hash = playHash(pid);
         }}
       />
     );
@@ -139,8 +142,8 @@ export default function Play({ playerId }) {
             className="not-me"
             onClick={() => {
               unclaimPlayer(playerId);
-              localStorage.removeItem(CLAIM_KEY);
-              window.location.hash = "#/play";
+              localStorage.removeItem(claimKey());
+              window.location.hash = playHash();
             }}
           >
             not you?

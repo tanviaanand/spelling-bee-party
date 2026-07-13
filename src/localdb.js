@@ -128,6 +128,15 @@ export function update(refObj, values) {
 
 export const remove = (refObj) => set(refObj, null);
 
+// One-shot read (matches firebase/database get()'s snapshot shape).
+export function get(refObj) {
+  const v = getAt(refObj.path);
+  return Promise.resolve({
+    exists: () => v !== null && v !== undefined,
+    val: () => structuredClone(v),
+  });
+}
+
 let pushCounter = 0;
 export function push(refObj, value) {
   // Sortable-enough unique key for a one-night app.

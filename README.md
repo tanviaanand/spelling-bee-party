@@ -1,28 +1,51 @@
 # 🐝 Spelling Bee Party
 
-A living-room game show. The TV is the stage, the host's laptop is the control room, and every guest's phone is a buzzer.
+**Turn any get-together into a game show.** Your TV becomes the stage, your laptop runs the show, and everyone's phone is a buzzer. Teams, trash talk, dramatic reveals — all the fun of a spelling bee, none of the school-gym energy.
+
+### ▶️ [**Start a game →**](https://spelling-bee-party.web.app)
 
 ![Games played](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fspelling-bee-party-default-rtdb.firebaseio.com%2FpublicStats.json&query=%24.gamesPlayed&label=%F0%9F%8E%89%20games%20played&color=f5b301&cacheSeconds=300)
 ![Players joined](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fspelling-bee-party-default-rtdb.firebaseio.com%2FpublicStats.json&query=%24.playersJoined&label=%F0%9F%93%B1%20players%20joined&color=f5b301&cacheSeconds=300)
 
-Three synchronized views over one realtime database:
+---
 
-| View | Device | What it shows |
-|---|---|---|
-| `/#/present` | TV (AirPlay / HDMI, fullscreen) | Hero round intros with rules, words & timers, ranked buzz order, wager boards, staged awards reveal — plus text-to-speech for every word and ambient bees 🐝 |
-| `/#/admin` | Host's laptop (private!) | Correct spellings, one-key judging with on-the-fly re-scoring, an append-only score ledger with undo/edit, wager collection, keyboard shortcuts for everything |
-| `/#/play` | Guests' phones | Tap-your-name claim (via QR on the TV) and a big red BUZZ button |
+## How it works (about 30 seconds)
 
-## The rounds
+Nothing to install. Nobody makes an account.
 
-1. **📝 Worker Bees** — pen & paper; everyone writes every word. +10 each.
-2. **🎵 Bee Sharp** — homophones by definition; every team writes ALL the spellings. +10 per spelling.
-3. **🔔 The Buzz** — rapid fire on the phones. *Every* buzz is collected and ranked by server-stamped speed; the host reveals the order on the TV and works down the list. +20 / −10.
-4. **👑 Queen Bee's Gambit** — every team locks a secret blind wager, then spellers stand with their backs to the screen and must *ask* for the definition, origin, or sentence. ±wager, two rotations, wagers revealed at the end. Yes, you can bet more than you have. Yes, you can go negative.
+1. **Open the link** on the computer you'll hook up to the TV → tap **Start a new game**.
+2. You get a little **game code** (like `BEEZ`). Put the TV screen up (there's a one-tap "Open TV screen" button), and keep the control panel on your laptop.
+3. When it's phone time, players **scan the QR code on the TV** (or type the code) and tap their name. Done — they're buzzing in.
 
-Plus sudden-death tiebreaker, and awards with bee puns (👑 Queen Bees, 🐝 The Humble Bumbles, 🔔 Top Buzzer, 🎨 Most Creative Misspelling) revealed one drum-roll at a time.
+That's the whole setup. Everything else — teams, words, scores, the drama — happens as you play.
 
-## Quick start (2 minutes, no accounts)
+## The four rounds
+
+🐝 **Worker Bees** — Old school. A word is read aloud, every team scribbles it on paper, everyone reveals at once. Phones away!
+
+🎵 **Bee Sharp** — Homophones. You hear the *definitions* ("a polite compliment" vs "something that completes") and every team writes *all* the spellings. Sneaky.
+
+🔔 **The Buzz** — Phones out, gloves off. A word is read and **everyone races to buzz** — the screen ranks who was fastest, and they spell solo against a 5-second clock. Get it wrong and it passes to the next-fastest.
+
+👑 **Queen Bee's Gambit** — The board-flipper. Every team secretly **wagers** points *before* seeing their word, then a speller stands with their back to the screen and has to *ask* for the definition, origin, or sentence. Bet big, win big — you can even bet more than you have and go negative. 😈
+
+Then a sudden-death tiebreaker if needed, and a proper awards ceremony with drumroll reveals (👑 Champions, 🐝 The Humble Bumbles, 🔔 Top Buzzer, 🎨 Most Creative Misspelling).
+
+## Want your own words?
+
+The word list is one friendly file — [`src/words.js`](src/words.js) — written in plain English. Each word is just:
+
+```js
+{ word: "bureaucracy", definition: "a system with lots of departments and red tape.",
+  sentence: "Renewing the permit meant endless bureaucracy.", origin: "French.", tier: 1 }
+```
+
+Swap in inside jokes, your friend group's vocabulary, another language, kid-friendly words — whatever your crowd will love. *(Editing words means running your own copy for now — see below. An in-app word editor is on the wishlist.)*
+
+## 🛠️ For tinkerers — run your own copy
+
+<details>
+<summary>Try it locally in 2 minutes (no accounts)</summary>
 
 ```bash
 git clone https://github.com/tanviaanand/spelling-bee-party.git
@@ -32,41 +55,40 @@ npm install
 npm run dev
 ```
 
-That's **local test mode**: the full game runs in your browser (state syncs across tabs, not devices). Open `localhost:5173/#/admin`, `#/present`, and `#/play` in three windows and play a round.
+Leaving the config as-is runs **local test mode** — the whole game works in one browser (open the admin, TV, and phone views in separate tabs). Perfect for editing words and trying things.
+</details>
 
-## Going live (real phones, ~10 minutes)
+<details>
+<summary>Host your own live version (real phones)</summary>
 
-1. Create a free [Firebase](https://console.firebase.google.com) project → **Build → Realtime Database → Create database** (locked mode is fine, the deploy overwrites rules).
-2. Project settings → **General → Your apps → Web** → register an app, paste its config into `src/firebase-config.js`.
-3. `cp .firebaserc.example .firebaserc` and put your project id in it.
-4. ```bash
+1. Make a free [Firebase](https://console.firebase.google.com) project → **Build → Realtime Database → Create database**.
+2. Project settings → **Your apps → Web** → register an app, paste the config into `src/firebase-config.js`.
+3. `cp .firebaserc.example .firebaserc`, add your project id, then:
+   ```bash
    npx firebase-tools login
    npm run build
    npx firebase-tools deploy --only database,hosting
    ```
-5. Open the hosting URL on the TV (`/#/present`), your laptop (`/#/admin`), and let the QR code on Round 3's intro screen do the rest.
 
-> ⚠️ **Security model: there isn't one.** The database rules are wide open by design — this is a party app with a lifespan of one evening. Anyone with your URL can read and write. Don't share the URL beyond your guests, and hit *Reset game* when the night's over.
+⚠️ **Heads up:** the database is wide open by design — this is a one-night party app, not a bank. Anyone with a game code can peek at that game. Keep codes among your guests.
+</details>
 
-## Make it yours
+<details>
+<summary>Host keyboard shortcuts</summary>
 
-- **Words** — everything lives in [`src/words.js`](src/words.js): four word banks + trial words, each entry a plain object with definition/origin/sentence. Swap in your own theme, language, or difficulty.
-- **Rules copy & round names** — [`src/rules.js`](src/rules.js), shown on the TV intro screens.
-- **Awards & puns** — the awards cards in [`src/views/PresenterStages.jsx`](src/views/PresenterStages.jsx).
-- **Scoring** — point values are inline where each round marks (`src/views/Admin.jsx`); totals derive from the ledger in [`src/scoring.js`](src/scoring.js).
+`Space` say word · `D` definition · `S` sentence · `O` origin · `C`/`X` right/wrong · `V` reveal spelling on TV · `Enter` next word · `B` open buzzing · `T` start/next buzzer · `W` wager · `H` hide scores · `U` undo · `→` next round
+</details>
 
-## Host cheat-sheet (Admin keyboard)
+<details>
+<summary>How the badges work</summary>
 
-`Space` say word · `D` definition · `S` sentence · `O` origin · `C`/`X` correct/wrong · `V` reveal spelling on TV · `Enter` next word · `B` open buzzing · `T` start/next buzzer · `W` focus wager · `H` hide scores · `U` undo last score · `→` next round
+Every game sends two anonymous tallies to this project — `+1 game` when Round 1 starts, `+1 player` when a phone joins. **That's it** — no names, words, or scores ever leave your game. Turn it off (or point it at your own database) with one line in [`src/stats.js`](src/stats.js).
+</details>
 
-## Anonymous usage ping
+## Built with
 
-The badges above count real games: every deployment sends two fire-and-forget counters to this repo's stats endpoint — `gamesPlayed +1` when a host starts Round 1, `playersJoined +1` when a phone claims a name. **Nothing else is sent** — no names, words, scores, or identifiers. Forks can opt out (or point the counter at their own database) by editing one constant in [`src/stats.js`](src/stats.js).
-
-## Stack
-
-React + Vite, Firebase Realtime Database + Hosting, Web Speech API for the voice, WebAudio for the dings and the time's-up klaxon, `qrcode` for the join screen. No CSS framework, no state library — one stylesheet and a ledger.
+React + Vite, Firebase Realtime Database, the browser's built-in text-to-speech for reading words aloud, and a little WebAudio for the dings and the time's-up klaxon. One stylesheet, no frameworks.
 
 ---
 
-Built for one very competitive living room. May the best hive win. 🐝🏆
+Made for one very competitive living room. May the best hive win. 🐝🏆

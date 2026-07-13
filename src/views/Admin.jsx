@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
-import { useDbValue, useScores } from "../hooks";
+import { useGameValue, useScores } from "../hooks";
 import { lastUndoable, buzzOrder, standings } from "../scoring";
 import {
   PHASES,
@@ -35,6 +35,7 @@ import {
   markGameCounted,
 } from "../db";
 import { bumpStat } from "../stats";
+import { gameCode } from "../game";
 import { trialWords, workerBees, beeSharp, theBuzz, queenBeeGambit } from "../words";
 import AdminSetup from "./AdminSetup";
 import AdminLedger from "./AdminLedger";
@@ -89,12 +90,12 @@ function toPrompt(item) {
 }
 
 export default function Admin() {
-  const state = useDbValue("state");
-  const teams = useDbValue("teams");
-  const players = useDbValue("players");
-  const awards = useDbValue("awards");
-  const gambitUsed = useDbValue("gambitUsed");
-  const marksTree = useDbValue("marks");
+  const state = useGameValue("state");
+  const teams = useGameValue("teams");
+  const players = useGameValue("players");
+  const awards = useGameValue("awards");
+  const gambitUsed = useGameValue("gambitUsed");
+  const marksTree = useGameValue("marks");
   const { ledger, totals } = useScores();
 
   const [flashMsg, setFlashMsg] = useState(null);
@@ -449,9 +450,19 @@ export default function Admin() {
   const gambitWordsLeft = queenBeeGambit.filter((w) => !burnedSet.has(w.word)).length;
   const gambitShort = teamIds.length * 2 > gambitWordsLeft && phase === "queen_bee_gambit";
 
+  const code = gameCode();
+  const presentUrl = `${window.location.origin}/#/${code}/present`;
+
   return (
     <div className="admin">
       {flashMsg && <div className="flash">{flashMsg}</div>}
+
+      <div className="admin-gamebar">
+        <span className="admin-gamecode">Game <b>{code}</b></span>
+        <a className="admin-tvlink" href={presentUrl} target="_blank" rel="noreferrer">📺 Open TV screen ↗</a>
+        <button className="tiny" onClick={() => { navigator.clipboard?.writeText(presentUrl); flash("TV link copied!"); }}>copy link</button>
+        <span className="muted">Players join at {window.location.host} with code <b>{code}</b> (or scan the QR in Round 3).</span>
+      </div>
 
       <header className="admin-header">
         <div className="phase-steps">

@@ -28,4 +28,4 @@ if (isConfigured) {
 
 export const db = _db;
 export const serverNow = () => Date.now() + offset;
-export const { ref, onValue, set, update, remove, push, increment, runTransaction, serverTimestamp } = api;
+export const { ref, onValue, set, update, remove, push, increment, runTransaction, serverTimestamp, get } = api;

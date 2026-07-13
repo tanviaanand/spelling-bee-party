@@ -1,11 +1,24 @@
 // The entire RTDB write surface. By convention (§10): Admin is the only writer of
 // /state, /teams, /ledger, /awards; phones call only buzz() and claimPlayer().
-import { db, serverNow, ref, push, set, update, remove, increment, serverTimestamp } from "./firebase";
+import { db, serverNow, ref, push, set, update, remove, increment, serverTimestamp, get } from "./firebase";
 import { computeTotals } from "./scoring";
+import { gamePath } from "./game";
 
-// Real Firebase rejects ref(db, "") — the root ref must omit the path argument.
-const r = (path) => (path ? ref(db, path) : ref(db, undefined));
-const newKey = () => push(r("_keys")).key; // client-side key generation, no write
+// Every game-scoped write goes under /games/<code>/… . r("") → the game node
+// itself (so multi-path updates keep relative subpaths), r("state") → …/state.
+const r = (path) => ref(db, gamePath(path || ""));
+// Global paths (build version, key generation) live at the root, not per-game.
+const rootRef = (path) => (path ? ref(db, path) : ref(db, undefined));
+const newKey = () => push(rootRef("_keys")).key; // client-side key generation, no write
+
+// ---------- rooms: create & join ----------
+export function createGame(code) {
+  return set(ref(db, `games/${code}`), { state: { ...INITIAL_STATE }, createdAt: serverNow() });
+}
+export async function gameExists(code) {
+  const snap = await get(ref(db, `games/${code}/state`));
+  return snap.exists();
+}
 
 // RTDB path segments can't contain . # $ / [ ]
 export const dbKey = (s) => String(s).replace(/[.#$/[\]]/g, "_");
@@ -259,7 +272,7 @@ export const revealAward = (key) => update(r("awards/revealed"), { [key]: true }
 // ---------- build high-water mark (stale-tab banner) ----------
 // Newest build wins; tabs whose id is lower show a "refresh" banner. resetGame leaves /meta alone.
 export function announceBuild(currentId, myId) {
-  if ((currentId ?? 0) < myId) return set(r("meta/buildId"), myId);
+  if ((currentId ?? 0) < myId) return set(rootRef("meta/buildId"), myId);
   return Promise.resolve();
 }
 
