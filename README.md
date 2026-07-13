@@ -91,4 +91,4 @@ React + Vite, Firebase Realtime Database, the browser's built-in text-to-speech 
 
 ---
 
-Made for one very competitive living room. May the best hive win. 🐝🏆
+Made for one very competitive living room by [**Tanvi Anand**](https://tanvianand.com). May the best hive win. 🐝🏆

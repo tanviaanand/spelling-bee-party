@@ -93,6 +93,12 @@ export default function Landing() {
             <b>Hosting?</b> Start a game → put the TV screen on your telly → share the code. That’s it — the game walks you through the rest.
           </p>
         </div>
+
+        <footer className="landing-foot">
+          <a href="https://github.com/tanviaanand/spelling-bee-party" target="_blank" rel="noreferrer">★ Fork it on GitHub</a>
+          <span className="foot-dot">·</span>
+          <span>made by <a href="https://tanvianand.com" target="_blank" rel="noreferrer">Tanvi Anand</a></span>
+        </footer>
       </div>
     </div>
   );
