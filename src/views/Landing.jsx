@@ -35,7 +35,7 @@ export default function Landing() {
     <div className="landing">
       <div className="landing-card">
         <h1 className="landing-title">🐝 Spelling Bee Party</h1>
-        <p className="landing-sub">A game show for your living room. Your TV is the stage, your phone is the buzzer.</p>
+        <p className="landing-sub">A game show for your living room — you run it from your laptop, the TV is the stage, and phones are the buzzers.</p>
 
         <div className="landing-actions">
           <div className="landing-block">
@@ -43,7 +43,7 @@ export default function Landing() {
             <button className="landing-btn primary" onClick={startGame} disabled={busy}>
               ✨ Start a new game
             </button>
-            <p className="landing-hint">You’ll get a game code to share. Put the next screen on your TV.</p>
+            <p className="landing-hint">You’ll get a game code to share. Takes ~30 seconds to set up.</p>
           </div>
 
           <div className="landing-divider"><span>or</span></div>
@@ -65,6 +65,33 @@ export default function Landing() {
             {joinError && <p className="landing-error">{joinError}</p>}
             <p className="landing-hint">Ask your host for the code, or scan the QR on the TV.</p>
           </div>
+        </div>
+
+        <div className="landing-how">
+          <h3 className="landing-how-title">One game, three screens</h3>
+          <div className="how-cards">
+            <div className="how-card host">
+              <div className="how-icon">💻</div>
+              <div className="how-name">Your laptop</div>
+              <div className="how-tag">host — private</div>
+              <p>The control panel. <b>Only you see this.</b> Read words aloud, mark answers, keep score, run the rounds.</p>
+            </div>
+            <div className="how-card host">
+              <div className="how-icon">📺</div>
+              <div className="how-name">The TV</div>
+              <div className="how-tag">host — everyone watches</div>
+              <p>The stage. Plug your laptop into the telly — one tap opens it. Words, timers, the leaderboard, big reveals. <b>No answers leak here.</b></p>
+            </div>
+            <div className="how-card player">
+              <div className="how-icon">📱</div>
+              <div className="how-name">Phones</div>
+              <div className="how-tag">players</div>
+              <p>Everyone’s buzzer. Players scan the QR on the TV (or type the code), tap their name, and they’re in.</p>
+            </div>
+          </div>
+          <p className="landing-hint how-foot">
+            <b>Hosting?</b> Start a game → put the TV screen on your telly → share the code. That’s it — the game walks you through the rest.
+          </p>
         </div>
       </div>
     </div>
