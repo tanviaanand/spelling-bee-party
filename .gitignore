@@ -1,0 +1,9 @@
+node_modules/
+dist/
+.firebase/
+*.log
+.DS_Store
+
+# per-deployment config — copy the .example files to recreate (README "Quick start")
+src/firebase-config.js
+.firebaserc
